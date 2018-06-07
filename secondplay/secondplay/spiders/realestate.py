@@ -3,7 +3,7 @@ import scrapy
 
 
 class ExampleSpider(scrapy.Spider):
-    name = 'real_estate'
+    name = 'realestate'
     valuee = 0
 
     def start_requests(self):
@@ -15,12 +15,17 @@ class ExampleSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        for title in response.css('.product-item-summary h4'):
-            self.save(response)
-            yield {'title': title.css('a ::text').extract_first()}
+        for product in response.css('div.product-item'):
+            #self.save(response)
+            yield {
+                'title': product.css('h4 a::text').extract_first(),
+                'link': product.css('h4 a').extract_first(),
+                'price': product.css('span .product-price-value::text').extract_first(),
+                'area': product.css(".product-item-data .row:last-child::text").extract_first(),
+            }
 
-        for next_page in response.css('#PaginacionInferior .siguiente a'):
-            yield response.follow(next_page, self.parse)
+        # for next_page in response.css('#PaginacionInferior .siguiente a'):
+        #     yield response.follow(next_page, self.parse)
 
     def save(self, response):
         self.valuee += 1
