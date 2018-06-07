@@ -19,9 +19,9 @@ class ExampleSpider(scrapy.Spider):
             #self.save(response)
             yield {
                 'title': product.css('h4 a::text').extract_first(),
-                'link': product.css('h4 a').extract_first(),
-                'price': product.css('span .product-price-value::text').extract_first(),
-                'area': product.css(".product-item-data .row:last-child::text").extract_first(),
+                'link': product.css('h4 a::attr(href)').extract_first(),
+                'price': product.css('p.product-property span.product-price-value::text').extract_first(),
+                'area': product.css(".product-item-data .row:last-child span").extract_first(),
             }
 
         # for next_page in response.css('#PaginacionInferior .siguiente a'):
